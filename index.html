@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="title" content="Kishna's Journal">
+    <meta name="description" content="Personal journal of Kishna Tiwari - Engineering student and aspiring VLSI engineer">
+    <meta property="og:title" content="Kishna's Journal">
+    <meta property="og:description" content="Personal journal of Kishna Tiwari - Engineering student and aspiring VLSI engineer">
+    <meta property="og:type" content="website">
+    <title>Kishna's Journal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #ffffff;
+            --text: #1a1a1a;
+            --accent: #2c3e50;
+            --subtle: #f8fafc;
+            --highlight: #3b82f6;
+            --today: #3b82f6;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --ease-out-quad: cubic-bezier(0.25, 1, 0.5, 1);
+            --sidebar-width: 320px;
+            --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            --gradient-secondary: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            --gradient-light: linear-gradient(135deg, #93c5fd 0%, #60a5fa 100%);
+            --entry-bg: rgba(59, 130, 246, 0.7);
+        }
+
+        /* Dark Mode Variables */
+        .dark-mode {
+            --bg: #0f172a;
+            --text: #f1f5f9;
+            --accent: #e2e8f0;
+            --subtle: #1e293b;
+            --highlight: #60a5fa;
+            --today: #3b82f6;
+            --shadow: 0 4px 20px rgba(0,0,0,0.3);
+            --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            --gradient-secondary: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            --gradient-light: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            --entry-bg: rgba(59, 130, 246, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            position: relative;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .app-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 1000;
+            background: var(--subtle);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
+        }
+
+        .theme-toggle i {
+            font-size: 1.2rem;
+            color: var(--text);
+        }
+
+        /* Home Page */
+        .home-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .home-page.hidden {
+            opacity: 0;
+            pointer-events: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .profile-container {
+            max-width: 600px;
+            margin: 0 auto;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .profile-pic {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 2rem;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 10px 40px rgba(59, 130, 246, 0.3);
+            border: 4px solid var(--bg);
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .profile-pic::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+            z-index: 1;
+        }
+
+        .profile-pic-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .profile-pic-fallback {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient-primary);
+            font-size: 3.5rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .home-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.1;
+            animation: fadeInUp 0.5s ease-out 0.1s both;
+        }
+
+        .intro-text {
+            font-size: 1.25rem;
+            line-height: 1.7;
+            color: var(--text);
+            margin-bottom: 2.5rem;
+            opacity: 0.9;
+            animation: fadeInUp 0.5s ease-out 0.2s both;
+        }
+
+        .enter-button {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+            animation: fadeInUp 0.5s ease-out 0.3s both;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .enter-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.4);
+            background: var(--gradient-secondary);
+        }
+
+        .enter-button:active {
+            transform: translateY(-1px);
+        }
+
+        .floating-emoji {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        .emoji-1 { top: 20%; left: 10%; animation-delay: 0s; color: #3b82f6; }
+        .emoji-2 { top: 60%; right: 15%; animation-delay: 1s; color: #60a5fa; }
+        .emoji-3 { bottom: 20%; left: 20%; animation-delay: 2s; color: #3b82f6; }
+        .emoji-4 { top: 30%; right: 25%; animation-delay: 3s; color: #93c5fd; }
+
+        /* Journal Page */
+        .journal-page {
+            display: none;
+            flex: 1;
+            min-height: 100vh;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .journal-page.visible {
+            display: flex;
+            opacity: 1;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            flex-direction: column;
+        }
+        
+        /* Sidebar Styles */
+        aside {
+            width: 100%;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+            background: var(--bg);
+            backdrop-filter: blur(12px);
+            z-index: 100;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .dark-mode aside {
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        }
+        
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.8px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+        
+        .logo-icon {
+            background: var(--gradient-primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        
+        .logo:hover .logo-icon {
+            transform: rotate(5deg) scale(1.05);
+        }
+        
+        .chronicle-title {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            transition: var(--transition);
+        }
+        
+        /* Year/Month Selection */
+        .date-selectors {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .month-select,
+        .year-select {
+            flex: 1;
+            padding: 0.6rem 0.75rem;
+            border-radius: 12px;
+            background: var(--subtle);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            color: var(--text);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            outline: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1rem;
+            padding-right: 2.5rem;
+        }
+
+        .month-select:hover,
+        .year-select:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .month-select:focus,
+        .year-select:focus {
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        /* Calendar Header */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            padding: 0.5rem 0;
+        }
+        
+        .month-label {
+            font-weight: 700;
+            font-size: 1.35rem;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .nav-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            background: var(--subtle);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .dark-mode .nav-btn {
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-1px);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        
+        .nav-btn:active {
+            transform: translateY(0);
+        }
+        
+        .today-btn {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 14px;
+            background: var(--subtle);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .today-btn:hover {
+            transform: translateY(-2px);
+            border-color: rgba(59, 130, 246, 0.3);
+            background: var(--gradient-light);
+            color: white;
+        }
+        
+        .today-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Modern Calendar Grid */
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            margin-top: 0.5rem;
+        }
+        
+        .cal-day {
+            font-size: 0.75rem;
+            color: #64748b;
+            text-align: center;
+            font-weight: 600;
+            padding: 0.35rem 0;
+            transition: var(--transition);
+        }
+        
+        .date {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            transform: scale(1);
+            z-index: 1;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        
+        .date::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0%;
+            height: 0%;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s ease, height 0.3s ease;
+            z-index: -1;
+        }
+        
+        .date:hover::before,
+        .date:active::before {
+            width: 300%;
+            height: 300%;
+        }
+        
+        .date:hover:not(.other-month),
+        .date:active:not(.other-month) {
+            transform: translateY(-2px) scale(1.03);
+            z-index: 10;
+        }
+        
+        .date.has-entry {
+            background: var(--entry-bg);
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+        }
+        
+        .date.has-entry:hover,
+        .date.has-entry:active {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 15px rgba(59, 130, 246, 0.3);
+            background: var(--entry-bg);
+        }
+        
+        .date.today {
+            box-shadow: 0 0 0 2px var(--today), 0 0 0 4px rgba(59, 130, 246, 0.2);
+            font-weight: 700;
+        }
+        
+        .date.today.has-entry {
+            box-shadow: 0 0 0 2px white, 0 0 0 4px var(--today);
+        }
+        
+        .date.other-month {
+            color: #94a3b8;
+            opacity: 0.7;
+        }
+        
+        .date.other-month.has-entry {
+            opacity: 0.9;
+        }
+        
+        .date.active {
+            box-shadow: 0 0 0 2px var(--today), 0 0 0 6px rgba(59, 130, 246, 0.1);
+            transform: scale(1.08) !important;
+            z-index: 15;
+            animation: pulse-active 1.5s infinite;
+        }
+        
+        @keyframes pulse-active {
+            0% { box-shadow: 0 0 0 2px var(--today), 0 0 0 6px rgba(59, 130, 246, 0.1); }
+            50% { box-shadow: 0 0 0 2px var(--today), 0 0 0 12px rgba(59, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 2px var(--today), 0 0 0 6px rgba(59, 130, 246, 0.1); }
+        }
+        
+        /* Content Area */
+        main {
+            flex: 1;
+            padding: 3rem 1.5rem;
+            max-width: 850px;
+            margin: 0 auto;
+            transition: var(--transition);
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .entry-meta {
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1.2px;
+            color: #64748b;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: var(--transition);
+        }
+
+        .dark-mode .entry-meta {
+            color: #94a3b8;
+        }
+        
+        .entry-meta.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        
+        .entry-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: var(--transition);
+        }
+        
+        .entry-title.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.2s ease 0.1s, transform 0.2s ease 0.1s;
+        }
+        
+        .entry-body {
+            font-size: 1.15rem;
+            line-height: 1.7;
+            color: var(--text);
+            max-width: 700px;
+            opacity: 0.9;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: var(--transition);
+            margin-bottom: 2rem;
+        }
+        
+        .entry-body.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.2s ease 0.2s, transform 0.2s ease 0.2s;
+        }
+        
+        .entry-body.no-entry {
+            color: #64748b;
+            font-style: italic;
+            font-weight: 300;
+        }
+
+        .dark-mode .entry-body.no-entry {
+            color: #94a3b8;
+        }
+        
+        /* Media */
+        .entry-media {
+            margin-top: 0;
+            margin-bottom: 3rem;
+            border-radius: 20px;
+            overflow: hidden;
+            background: var(--subtle);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            opacity: 0;
+            transform: translateY(30px) scale(0.98);
+            max-height: 0;
+            overflow: hidden;
+        }
+        
+        .entry-media.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            max-height: 500px;
+            transition: opacity 0.3s ease 0.3s, transform 0.3s ease 0.3s;
+        }
+        
+        .entry-media img, 
+        .entry-media video {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: var(--transition);
+            transform: scale(1);
+        }
+        
+        .entry-media img:hover {
+            transform: scale(1.03);
+        }
+        
+        .no-media {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-style: italic;
+            background: var(--subtle);
+            opacity: 0;
+            transform: scale(0.95);
+            transition: var(--transition);
+        }
+
+        .dark-mode .no-media {
+            color: #94a3b8;
+        }
+        
+        .entry-media.visible .no-media {
+            opacity: 1;
+            transform: scale(1);
+            transition-delay: 0.35s;
+        }
+        
+        /* Welcome State - Now always visible below entries */
+        .welcome-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            max-width: 700px;
+            margin: 2rem auto 4rem;
+            opacity: 1;
+            transform: translateY(0);
+            transition: var(--transition);
+            position: relative;
+            border-top: 2px dashed rgba(59, 130, 246, 0.2);
+            padding-top: 3rem;
+            margin-top: auto;
+        }
+
+        .dark-mode .welcome-state {
+            border-top: 2px dashed rgba(59, 130, 246, 0.3);
+        }
+        
+        .welcome-state.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .welcome-title {
+            font-size: 4.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            color: var(--subtle);
+            letter-spacing: -2px;
+            line-height: 0.9;
+        }
+        
+        .welcome-subtitle {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .welcome-text {
+            font-size: 1.1rem;
+            color: var(--text);
+            line-height: 1.6;
+            opacity: 0.8;
+            margin-bottom: 1.5rem;
+        }
+        
+        .hint {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(59, 130, 246, 0.1);
+            color: #1d4ed8;
+            padding: 0.35rem 1rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            margin-top: 1.5rem;
+            font-weight: 500;
+        }
+
+        .dark-mode .hint {
+            background: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+        }
+        
+        .hint i {
+            color: var(--today);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        /* Stats */
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px dashed rgba(59, 130, 246, 0.2);
+            font-size: 0.85rem;
+            color: #64748b;
+            font-weight: 500;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .dark-mode .stats {
+            border-top: 1px dashed rgba(59, 130, 246, 0.3);
+            color: #94a3b8;
+        }
+        
+        .total-entries {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 600;
+        }
+        
+        /* Mobile Responsive - CONSISTENT FONTS */
+        @media (min-width: 768px) {
+            .container {
+                flex-direction: row;
+                min-height: 100vh;
+            }
+            
+            aside {
+                width: 320px;
+                height: 100vh;
+                position: sticky;
+                top: 0;
+                border-right: 1px solid rgba(59, 130, 246, 0.1);
+                border-bottom: none;
+                padding: 2.5rem;
+                overflow-y: auto;
+            }
+
+            .dark-mode aside {
+                border-right: 1px solid rgba(59, 130, 246, 0.1);
+            }
+            
+            main {
+                padding: 6rem 8%;
+                width: auto;
+            }
+            
+            .entry-title {
+                font-size: 3rem; /* Slightly smaller for consistency */
+                margin-bottom: 2rem;
+                line-height: 1.05;
+            }
+            
+            .entry-body {
+                font-size: 1.2rem; /* Consistent size */
+                line-height: 1.75;
+            }
+            
+            .entry-media {
+                margin-bottom: 4rem;
+            }
+            
+            .welcome-state {
+                padding: 4rem 2rem;
+                margin: 3rem auto 6rem;
+                max-width: 700px;
+            }
+            
+            .welcome-title {
+                font-size: 6rem; /* Smaller for desktop */
+                letter-spacing: -3px;
+            }
+            
+            .welcome-subtitle {
+                font-size: 1.8rem;
+            }
+            
+            .calendar {
+                gap: 8px;
+            }
+            
+            .date {
+                font-size: 1rem;
+            }
+
+            .home-title {
+                font-size: 4rem; /* Consistent size */
+            }
+
+            .intro-text {
+                font-size: 1.3rem; /* Consistent size */
+            }
+
+            .enter-button {
+                padding: 1.25rem 3rem;
+                font-size: 1.2rem;
+            }
+
+            .date-selectors {
+                gap: 1rem;
+            }
+
+            .month-select,
+            .year-select {
+                padding: 0.75rem 1rem;
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .calendar {
+                gap: 4px;
+            }
+            
+            .date {
+                font-size: 0.85rem; /* Consistent size */
+                border-radius: 10px;
+            }
+            
+            .cal-day {
+                font-size: 0.75rem; /* Consistent size */
+                padding: 0.25rem 0;
+            }
+            
+            .month-label {
+                font-size: 1.2rem; /* Consistent size */
+            }
+            
+            .nav-buttons {
+                gap: 0.25rem;
+            }
+            
+            .nav-btn {
+                width: 32px;
+                height: 32px;
+            }
+            
+            .entry-title {
+                font-size: 2rem; /* Consistent with desktop proportion */
+            }
+            
+            .entry-body {
+                font-size: 1.1rem; /* Consistent with desktop proportion */
+            }
+            
+            .welcome-title {
+                font-size: 3.5rem; /* Consistent with desktop proportion */
+            }
+            
+            .welcome-subtitle {
+                font-size: 1.4rem; /* Consistent with desktop proportion */
+            }
+            
+            .logo {
+                font-size: 1.2rem;
+                margin-bottom: 1.2rem;
+            }
+            
+            aside {
+                padding: 1rem;
+            }
+
+            .home-title {
+                font-size: 2.5rem; /* Consistent with desktop proportion */
+            }
+
+            .intro-text {
+                font-size: 1.1rem; /* Consistent with desktop proportion */
+            }
+
+            .profile-pic {
+                width: 120px;
+                height: 120px;
+            }
+
+            .profile-pic-fallback {
+                font-size: 2.5rem;
+            }
+
+            .date-selectors {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .welcome-text {
+                font-size: 1rem; /* Consistent */
+            }
+
+            .hint {
+                font-size: 0.85rem; /* Consistent */
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        
+        @keyframes scaleIn {
+            from { 
+                opacity: 0; 
+                transform: scale(0.95); 
+            }
+            to { 
+                opacity: 1; 
+                transform: scale(1); 
+            }
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+            70% { box-shadow: 0 0 0 12px rgba(59, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .fade-in {
+            animation: fadeInUp 0.3s ease-out forwards;
+        }
+        
+        .scale-in {
+            animation: scaleIn 0.3s var(--ease-out-quad) forwards;
+        }
+        
+        /* Calendar entry animation */
+        .calendar-entry {
+            animation: scaleIn 0.2s var(--ease-out-quad) forwards;
+        }
+        
+        /* Improve animation performance */
+        .date, .nav-btn, .today-btn, .enter-button {
+            will-change: transform, background-color;
+        }
+        
+        /* Improve touch experience */
+        .date, .nav-btn, .today-btn, .enter-button {
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* Back button for mobile */
+        .back-home {
+            display: none;
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+            z-index: 100;
+            transition: var(--transition);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .back-home:hover {
+            transform: translateX(-50%) scale(1.05);
+            background: var(--gradient-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .back-home {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+        }
+
+        /* Smooth page transition - faster */
+        .page-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-primary);
+            z-index: 9999;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+
+        .page-transition.active {
+            transform: translateY(0);
+        }
+
+        .page-transition.complete {
+            transform: translateY(-100%);
+            transition-delay: 0.1s;
+        }
+
+        /* Blue wave background */
+        .blue-wave {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.05;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(29, 78, 216, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(96, 165, 250, 0.2) 0%, transparent 50%);
+        }
+
+        .dark-mode .blue-wave {
+            opacity: 0.1;
+        }
+
+        /* No Entry Message Styling */
+        .no-entry-message {
+            text-align: center;
+            padding: 2rem;
+            margin: 2rem 0;
+            background: var(--subtle);
+            border-radius: 15px;
+            border-left: 4px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .no-entry-message h3 {
+            color: #64748b;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .no-entry-message p {
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        .dark-mode .no-entry-message {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .dark-mode .no-entry-message h3 {
+            color: #94a3b8;
+        }
+
+        .dark-mode .no-entry-message p {
+            color: #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Blue wave background -->
+    <div class="blue-wave"></div>
+    
+    <!-- Page Transition Overlay -->
+    <div class="page-transition" id="pageTransition"></div>
+
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </div>
+
+    <!-- Home Page -->
+    <div class="home-page" id="homePage">
+        <div class="floating-emoji emoji-1">📖</div>
+        <div class="floating-emoji emoji-2">💻</div>
+        <div class="floating-emoji emoji-3">⚡</div>
+        <div class="floating-emoji emoji-4">🔬</div>
+        
+        <div class="profile-container">
+            <div class="profile-pic" id="profilePic">
+                <!-- Profile image will be loaded here -->
+            </div>
+            <h1 class="home-title">Welcome to My Journal</h1>
+            <p class="intro-text">
+                Hi, I am <strong>Kishna Tiwari</strong> and this is my daily journal website. 
+                I started this website in January 2026. I am studying engineering and dream to 
+                become a VLSI engineer. Welcome and hope you have a good time here!
+            </p>
+            <button class="enter-button" id="enterJournal">
+                <i class="fas fa-book-open"></i>
+                Enter Journal
+            </button>
+        </div>
+    </div>
+
+    <!-- Journal Page -->
+    <div class="journal-page" id="journalPage">
+        <div class="container">
+            <aside id="sidebar">
+                <div class="logo" id="backToHome">
+                    <div class="logo-icon">K</div>
+                    <div class="chronicle-title">Journal</div>
+                </div>
+                
+                <!-- Year/Month Selection -->
+                <div class="date-selectors">
+                    <select class="month-select" id="monthSelect">
+                        <option value="0">January</option>
+                        <option value="1">February</option>
+                        <option value="2">March</option>
+                        <option value="3">April</option>
+                        <option value="4">May</option>
+                        <option value="5">June</option>
+                        <option value="6">July</option>
+                        <option value="7">August</option>
+                        <option value="8">September</option>
+                        <option value="9">October</option>
+                        <option value="10">November</option>
+                        <option value="11">December</option>
+                    </select>
+                    <select class="year-select" id="yearSelect">
+                        <!-- Years will be populated by JavaScript -->
+                    </select>
+                </div>
+                
+                <div class="calendar-header">
+                    <div class="month-label">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span id="monthLabel">January 2026</span>
+                    </div>
+                    <div class="nav-buttons">
+                        <div class="nav-btn" id="prevMonth">
+                            <i class="fas fa-chevron-left"></i>
+                        </div>
+                        <div class="nav-btn" id="nextMonth">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="calendar" id="calendarGrid">
+                    <div class="cal-day">S</div><div class="cal-day">M</div><div class="cal-day">T</div>
+                    <div class="cal-day">W</div><div class="cal-day">T</div><div class="cal-day">F</div><div class="cal-day">S</div>
+                </div>
+                
+                <button class="today-btn" id="todayBtn">
+                    <i class="fas fa-map-pin"></i>
+                    <span>Today</span>
+                </button>
+                
+                <div class="stats">
+                    <div>Personal Archive &mdash; Since 2026</div>
+                    <div class="total-entries" id="totalEntries"></div>
+                </div>
+            </aside>
+
+            <main id="entryView">
+                <div class="entry-meta" id="viewDate">
+                    <i class="fas fa-clock"></i>
+                    <span>Select a date</span>
+                </div>
+                <h1 class="entry-title" id="viewTitle">Welcome to Your Chronicle</h1>
+                <div class="entry-body" id="viewBody">
+                    Click on a highlighted date to see the record for that day. Your memories await.
+                </div>
+                <div class="entry-media" id="viewMedia">
+                    <div class="no-media">No media for this entry</div>
+                </div>
+                
+                <!-- Welcome State - Always visible at bottom -->
+                <div class="welcome-state" id="welcomeState">
+                    <div class="welcome-title">2026</div>
+                    <div class="welcome-subtitle">Kishna's Personal Chronicle</div>
+                    <div class="welcome-text">This is where your journey lives—each memory carefully preserved like pages in a timeless book. Start exploring by selecting a date with a memory.</div>
+                    <div class="hint">
+                        <i class="fas fa-lightbulb"></i>
+                        Dates with entries appear in <strong>blue</strong>
+                    </div>
+                </div>
+            </main>
+        </div>
+        <button class="back-home" id="mobileBackHome">
+            <i class="fas fa-home"></i>
+            Back to Home
+        </button>
+    </div>
+
+    <script>
+        // Initialize variables
+        const now = new Date();
+        let currentMonth = now.getMonth();
+        let currentYear = now.getFullYear();
+        let selectedDate = null;
+        let diaryData = {};
+
+        // Profile Picture URL - HARDCODED
+        const PROFILE_PIC_URL = "https://cdn.discordapp.com/attachments/1302314887481004093/1458513952718979103/IMG_20260101_143846_583.webp?ex=695fea78&is=695e98f8&hm=d78feb8b31829ce4080af3b2ac08b5f99fdbd94b5160cc10ed8c717d6321f38a";
+
+        // DOM Elements
+        const homePage = document.getElementById('homePage');
+        const journalPage = document.getElementById('journalPage');
+        const enterJournalBtn = document.getElementById('enterJournal');
+        const backToHomeBtn = document.getElementById('backToHome');
+        const mobileBackHomeBtn = document.getElementById('mobileBackHome');
+        const themeToggle = document.getElementById('themeToggle');
+        const pageTransition = document.getElementById('pageTransition');
+        const monthSelect = document.getElementById('monthSelect');
+        const yearSelect = document.getElementById('yearSelect');
+        const profilePicContainer = document.getElementById('profilePic');
+        const welcomeState = document.getElementById('welcomeState');
+
+        // Load diary data from JSON file
+        async function loadDiaryData() {
+            try {
+                const response = await fetch('data.json');
+                if (!response.ok) {
+                    throw new Error('Failed to load diary data');
+                }
+                diaryData = await response.json();
+                console.log('Diary data loaded successfully:', Object.keys(diaryData).length, 'entries');
+                return true;
+            } catch (error) {
+                console.error('Error loading diary data:', error);
+                // Use fallback data if JSON file fails to load
+                diaryData = {
+                    "2026-01-01": {
+                        "title": "New Year's Day",
+                        "body": "Started the year with excitement and new goals. Today marks the beginning of my journey to become a VLSI engineer. I spent the day planning my studies and setting up this journal.",
+                        "media": "",
+                        "type": "none"
+                    },
+                    "2026-01-02": {
+                        "title": "First Study Day",
+                        "body": "Studied digital logic design today. Covered basic gates and Boolean algebra. Feeling motivated to continue this journey. Need to find more resources on VLSI design.",
+                        "media": "",
+                        "type": "none"
+                    },
+                    "2026-01-15": {
+                        "title": "Winter Walk & Study Session",
+                        "body": "Took a long walk through Central Park. The bare trees created beautiful silhouettes against the gray sky. Stopped at that little hot chocolate stand near Bethesda Terrace. Later spent 4 hours studying CMOS circuits - feeling motivated about my VLSI journey.",
+                        "media": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1000",
+                        "type": "image"
+                    }
+                };
+                return false;
+            }
+        }
+
+        // Load profile picture
+        function loadProfilePicture() {
+            if (!profilePicContainer) return;
+            
+            // Create image element
+            const img = document.createElement('img');
+            img.className = 'profile-pic-img';
+            img.src = PROFILE_PIC_URL;
+            img.alt = 'Kishna Tiwari';
+            
+            // Create fallback element
+            const fallback = document.createElement('div');
+            fallback.className = 'profile-pic-fallback';
+            fallback.textContent = 'K';
+            
+            // Add both to container
+            profilePicContainer.appendChild(img);
+            profilePicContainer.appendChild(fallback);
+            
+            // Handle image load/error
+            img.onload = () => {
+                console.log('Profile picture loaded successfully');
+                // Image loaded successfully, hide fallback
+                fallback.style.display = 'none';
+            };
+            
+            img.onerror = () => {
+                console.log('Profile picture failed to load, showing fallback');
+                // Image failed to load, show fallback
+                img.style.display = 'none';
+                fallback.style.display = 'flex';
+            };
+            
+            // Set timeout to show fallback if image takes too long
+            setTimeout(() => {
+                if (!img.complete || img.naturalWidth === 0) {
+                    console.log('Profile picture timed out, showing fallback');
+                    img.style.display = 'none';
+                    fallback.style.display = 'flex';
+                }
+            }, 3000);
+        }
+
+        // Theme Management
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                localStorage.setItem('theme', 'light');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        }
+
+        // Page Navigation - Faster transitions
+        async function navigateToJournal() {
+            pageTransition.classList.add('active');
+            
+            setTimeout(async () => {
+                homePage.classList.add('hidden');
+                journalPage.classList.add('visible');
+                pageTransition.classList.add('complete');
+                
+                // Load data and initialize journal
+                await loadDiaryData();
+                updateTotalEntries();
+                populateYearSelect();
+                renderCalendar();
+                
+                // Auto-open today's entry
+                autoOpenTodayEntry();
+                
+                setTimeout(() => {
+                    pageTransition.classList.remove('active', 'complete');
+                }, 300);
+            }, 200);
+        }
+
+        function navigateToHome() {
+            pageTransition.classList.add('active');
+            
+            setTimeout(() => {
+                journalPage.classList.remove('visible');
+                homePage.classList.remove('hidden');
+                pageTransition.classList.add('complete');
+                
+                setTimeout(() => {
+                    pageTransition.classList.remove('active', 'complete');
+                }, 300);
+            }, 200);
+        }
+
+        // Update total entries display
+        function updateTotalEntries() {
+            document.getElementById('totalEntries').textContent = 
+                `${Object.keys(diaryData).length} memories preserved`;
+        }
+
+        // Populate year select dropdown
+        function populateYearSelect() {
+            yearSelect.innerHTML = '';
+            const startYear = 2026;
+            const endYear = 2036;
+            
+            for (let year = startYear; year <= endYear; year++) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                yearSelect.appendChild(option);
+            }
+            
+            yearSelect.value = currentYear;
+            monthSelect.value = currentMonth;
+        }
+
+        // Update calendar based on month/year selection
+        function updateCalendarFromSelect() {
+            currentMonth = parseInt(monthSelect.value);
+            currentYear = parseInt(yearSelect.value);
+            renderCalendar();
+        }
+
+        // Format date to YYYY-MM-DD
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // Format date for display
+        function formatDisplayDate(date) {
+            return date.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
+
+        // Calendar functions
+        function getDaysInMonth(month, year) {
+            return new Date(year, month + 1, 0).getDate();
+        }
+
+        function getFirstDayOfMonth(month, year) {
+            return new Date(year, month, 1).getDay();
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            while (grid.children.length > 7) {
+                grid.removeChild(grid.lastChild);
+            }
+            
+            const daysInMonth = getDaysInMonth(currentMonth, currentYear);
+            const firstDay = getFirstDayOfMonth(currentMonth, currentYear);
+            const daysFromPrevMonth = firstDay;
+            
+            // Previous month days
+            const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+            const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+            const daysInPrevMonth = getDaysInMonth(prevMonth, prevYear);
+            
+            for (let i = daysInPrevMonth - daysFromPrevMonth + 1; i <= daysInPrevMonth; i++) {
+                const date = new Date(prevYear, prevMonth, i);
+                const dateStr = formatDate(date);
+                addDateCell(date, dateStr, false);
+            }
+            
+            // Current month days
+            for (let i = 1; i <= daysInMonth; i++) {
+                const date = new Date(currentYear, currentMonth, i);
+                const dateStr = formatDate(date);
+                addDateCell(date, dateStr, true);
+            }
+            
+            // Next month days
+            const daysAdded = daysFromPrevMonth + daysInMonth;
+            const daysFromNextMonth = 42 - daysAdded;
+            
+            const nextMonth = currentMonth === 11 ? 0 : currentMonth + 1;
+            const nextYear = currentMonth === 11 ? currentYear + 1 : currentYear;
+            
+            for (let i = 1; i <= daysFromNextMonth; i++) {
+                const date = new Date(nextYear, nextMonth, i);
+                const dateStr = formatDate(date);
+                addDateCell(date, dateStr, false);
+            }
+            
+            // Update month label
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                              'July', 'August', 'September', 'October', 'November', 'December'];
+            const monthLabel = document.getElementById('monthLabel');
+            monthLabel.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+            
+            // Update selectors
+            monthSelect.value = currentMonth;
+            yearSelect.value = currentYear;
+        }
+
+        function addDateCell(date, dateStr, isCurrentMonth) {
+            const grid = document.getElementById('calendarGrid');
+            const dateEl = document.createElement('div');
+            
+            const hasEntry = !!diaryData[dateStr];
+            const isToday = date.toDateString() === now.toDateString();
+            
+            dateEl.className = 'date calendar-entry';
+            if (hasEntry) dateEl.classList.add('has-entry');
+            if (!isCurrentMonth) dateEl.classList.add('other-month');
+            if (isToday) dateEl.classList.add('today');
+            if (selectedDate && date.toDateString() === selectedDate.toDateString()) {
+                dateEl.classList.add('active');
+            }
+            
+            dateEl.textContent = date.getDate();
+            dateEl.dataset.date = dateStr;
+            
+            dateEl.addEventListener('click', () => {
+                document.querySelectorAll('.date').forEach(el => {
+                    el.classList.remove('active');
+                });
+                
+                dateEl.classList.add('active');
+                loadEntry(date);
+            });
+            
+            grid.appendChild(dateEl);
+            
+            setTimeout(() => {
+                dateEl.style.opacity = '1';
+                dateEl.style.transform = 'translateY(0)';
+            }, 15 * (grid.children.length - 7));
+        }
+
+        function highlightToday() {
+            document.querySelectorAll('.date').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            if (selectedDate) {
+                const dateStr = formatDate(selectedDate);
+                const selectedEl = document.querySelector(`.date[data-date="${dateStr}"]`);
+                if (selectedEl) {
+                    selectedEl.classList.add('active');
+                }
+            }
+            
+            const todayEl = document.querySelector('.date.today:not(.other-month)');
+            if (todayEl) {
+                todayEl.classList.add('pulse');
+                setTimeout(() => todayEl.classList.remove('pulse'), 2000);
+            }
+        }
+
+        function loadEntry(date) {
+            const entryBody = document.getElementById('viewBody');
+            const entryMedia = document.getElementById('viewMedia');
+            const metaEl = document.getElementById('viewDate');
+            const titleEl = document.getElementById('viewTitle');
+            
+            // Animate out current content
+            document.querySelectorAll('.entry-meta, .entry-title, .entry-body, .entry-media').forEach(el => {
+                el.classList.remove('visible');
+            });
+            
+            const dateStr = formatDate(date);
+            const entry = diaryData[dateStr];
+            selectedDate = date;
+            
+            metaEl.innerHTML = `
+                <i class="fas fa-clock"></i>
+                <span>${formatDisplayDate(date)}</span>
+            `;
+            
+            setTimeout(() => {
+                metaEl.classList.add('visible');
+                
+                if (entry) {
+                    titleEl.textContent = entry.title;
+                    titleEl.classList.add('visible');
+                    
+                    entryBody.textContent = entry.body;
+                    entryBody.className = 'entry-body';
+                    entryBody.classList.add('visible');
+                    
+                    entryMedia.innerHTML = '';
+                    entryMedia.classList.remove('visible');
+                    
+                    if (entry.media && entry.media.trim() !== '') {
+                        const img = document.createElement('img');
+                        img.src = entry.media;
+                        img.alt = `Memory from ${formatDisplayDate(date)}`;
+                        img.className = 'loading';
+                        
+                        img.onload = () => {
+                            setTimeout(() => {
+                                img.classList.remove('loading');
+                                entryMedia.appendChild(img);
+                                entryMedia.classList.add('visible');
+                            }, 150);
+                        };
+                        
+                        img.onerror = () => {
+                            entryMedia.innerHTML = '<div class="no-media">Image failed to load</div>';
+                            entryMedia.classList.add('visible');
+                        };
+                    } else {
+                        entryMedia.innerHTML = '<div class="no-media">No media for this entry</div>';
+                        setTimeout(() => {
+                            entryMedia.classList.add('visible');
+                        }, 150);
+                    }
+                } else {
+                    titleEl.textContent = "No Entry Found";
+                    titleEl.classList.add('visible');
+                    
+                    entryBody.textContent = `No memory recorded for ${formatDisplayDate(date)}. This page remains blank, waiting for your story to fill it. Some days are quiet chapters in our life's book.`;
+                    entryBody.className = 'entry-body no-entry';
+                    entryBody.classList.add('visible');
+                    
+                    entryMedia.innerHTML = '<div class="no-media">No media available</div>';
+                    setTimeout(() => {
+                        entryMedia.classList.add('visible');
+                    }, 150);
+                }
+                
+                // Scroll to top of main content (not to welcome state)
+                if (window.innerWidth < 768) {
+                    document.getElementById('entryView').scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                } else {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }, 100);
+            
+            highlightToday();
+        }
+
+        function goToToday() {
+            currentMonth = now.getMonth();
+            currentYear = now.getFullYear();
+            renderCalendar();
+            selectedDate = new Date(now);
+            
+            setTimeout(() => {
+                loadEntry(selectedDate);
+            }, 200);
+        }
+
+        // Auto-open today's entry when journal loads
+        function autoOpenTodayEntry() {
+            const todayStr = formatDate(now);
+            
+            // Check if today has an entry
+            if (diaryData[todayStr]) {
+                selectedDate = new Date(now);
+                loadEntry(selectedDate);
+            } else {
+                // If today has no entry, show the default welcome state
+                // but still highlight today's date
+                highlightToday();
+            }
+        }
+
+        // Event Listeners
+        enterJournalBtn.addEventListener('click', navigateToJournal);
+        backToHomeBtn.addEventListener('click', navigateToHome);
+        mobileBackHomeBtn.addEventListener('click', navigateToHome);
+        themeToggle.addEventListener('click', toggleTheme);
+        
+        // Month/Year select change listeners
+        monthSelect.addEventListener('change', updateCalendarFromSelect);
+        yearSelect.addEventListener('change', updateCalendarFromSelect);
+        
+        document.getElementById('prevMonth').addEventListener('click', () => {
+            if (currentMonth === 0) {
+                currentMonth = 11;
+                currentYear--;
+            } else {
+                currentMonth--;
+            }
+            
+            renderCalendar();
+        });
+
+        document.getElementById('nextMonth').addEventListener('click', () => {
+            if (currentMonth === 11) {
+                currentMonth = 0;
+                currentYear++;
+            } else {
+                currentMonth++;
+            }
+            
+            renderCalendar();
+        });
+
+        document.getElementById('todayBtn').addEventListener('click', goToToday);
+
+        // Initialize
+        async function init() {
+            initTheme();
+            loadProfilePicture();
+            
+            // Add floating emoji animations
+            document.querySelectorAll('.floating-emoji').forEach((emoji, index) => {
+                emoji.style.animationDelay = `${index * 1.5}s`;
+            });
+        }
+
+        // Start when DOM is loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+        
+        // Prevent zoom on double-tap for mobile
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (event) => {
+            const nowTime = Date.now();
+            if (nowTime - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = nowTime;
+        }, false);
+    </script>
+</body>
+</html>
